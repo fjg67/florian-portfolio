@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 
 const INTRO_KEY = "fjg-intro-seen";
-const INTRO_DURATION = 2300;
+const INTRO_DURATION = 1900;
 
 function markIntroSeen() {
   try {

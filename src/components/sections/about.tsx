@@ -1,6 +1,6 @@
 import { Reveal } from "@/components/reveal";
 
-const process = ["BESOIN", "IDÉE", "CODE", "API", "SERVEUR", "UTILISATEUR"];
+const process = ["CONCEVOIR", "DÉVELOPPER", "DÉPLOYER", "ACCOMPAGNER"];
 
 export function AboutSection() {
   return (
@@ -11,16 +11,16 @@ export function AboutSection() {
       </Reveal>
       <div className="about-layout">
         <Reveal className="about-copy">
-          <p className="about-statement">Je comprends l’écosystème dans son ensemble.</p>
-          <p>Du développement logiciel à l’infrastructure, en passant par l’expérience terrain et le support informatique : j’aime relier les besoins concrets aux solutions qui fonctionnent.</p>
-          <p>Cette polyvalence me permet d’aborder un produit au-delà de son interface — de la première idée aux services et systèmes qui le rendent possible.</p>
+          <p className="about-statement">Je relie les usages aux systèmes qui rendent les produits fiables.</p>
+          <p>Mon expérience du support et du terrain m’aide à partir des besoins concrets. Je conçois ensuite des applications et des services en gardant à l’esprit leur déploiement et leur usage au quotidien.</p>
+          <p>Cette vision traverse le mobile, le web et l’infrastructure : de la première décision technique à l’accompagnement des personnes qui utilisent l’outil.</p>
         </Reveal>
         <Reveal className="process-card">
-          <div className="process-top"><span className="mono">END-TO-END THINKING</span><span className="live-indicator"><i /> ACTIVE</span></div>
+          <div className="process-top"><span className="mono">DU BESOIN À L’USAGE</span><span className="live-indicator"><i /> APPROCHE DE BOUT EN BOUT</span></div>
           <div className="process-flow">
             {process.map((item, index) => <div className="process-step" key={item}><span className="process-node">{String(index + 1).padStart(2, "0")}</span><span>{item}</span>{index < process.length - 1 && <i className="process-connector" />}</div>)}
           </div>
-          <div className="process-bottom"><span>FROM FIRST NEED</span><span>TO REAL-WORLD USE</span></div>
+          <div className="process-bottom"><span>COMPRENDRE LE TERRAIN</span><span>FAIRE DURER LA SOLUTION</span></div>
         </Reveal>
       </div>
     </section>

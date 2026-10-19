@@ -41,7 +41,6 @@ export function SiteHeader() {
     const closeOnEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setMenuOpen(false);
-        setTerminalOpen(false);
       }
     };
     window.addEventListener("keydown", closeOnEscape);

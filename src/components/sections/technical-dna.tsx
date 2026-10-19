@@ -1,7 +1,14 @@
+"use client";
+
+import { useState } from "react";
 import { disciplines, skillGroups } from "@/data/portfolio";
 import { Reveal } from "@/components/reveal";
 
 export function TechnicalDna() {
+  const [selectedDomain, setSelectedDomain] = useState<(typeof disciplines)[number]["key"]>("mobile");
+  const activeDiscipline = disciplines.find((item) => item.key === selectedDomain)!;
+  const activeSkillGroups = skillGroups.filter((group) => group.tone === selectedDomain);
+
   return (
     <section className="section-wrap dna-section" id="expertise">
       <Reveal className="section-heading">
@@ -12,13 +19,25 @@ export function TechnicalDna() {
       <div className="discipline-grid">
         {disciplines.map((item, index) => (
           <Reveal key={item.key} delay={index * 0.08}>
-            <article className={`discipline-card tone-${item.key}`}>
-              <div className="card-topline"><span className="mono">{item.number}</span><span className="card-signal"><i /> CONNECTED</span></div>
+            <article className={`discipline-card tone-${item.key}${selectedDomain === item.key ? " is-active" : ""}`}>
+              <div className="card-topline"><span className="mono">{item.number}</span><span className="card-signal">{item.label.toUpperCase()}</span></div>
               <div className="discipline-symbol" aria-hidden="true"><span>{item.key === "mobile" ? "▯" : item.key === "web" ? "⌘" : "⌬"}</span></div>
               <h3>{item.label}</h3>
               <p>{item.summary}</p>
               <div className="tech-list">{item.technologies.map((tech) => <span key={tech}>{tech}</span>)}</div>
-              <div className="card-bottomline"><span>EXPLORE DOMAIN</span><span aria-hidden="true">↗</span></div>
+              {selectedDomain === item.key && (
+                <div className="discipline-expanded">
+                  {activeSkillGroups.map((group) => (
+                    <div className="discipline-focus" key={group.label}>
+                      <span>{group.label}</span>
+                      <p>{group.items.join(" · ")}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+              <button className="card-bottomline" type="button" aria-label={`Afficher les technologies ${item.label}`} aria-pressed={selectedDomain === item.key} onClick={() => setSelectedDomain(item.key)}>
+                <span>{selectedDomain === item.key ? "DOMAIN SELECTED" : "EXPLORE DOMAIN"}</span><span aria-hidden="true">↗</span>
+              </button>
             </article>
           </Reveal>
         ))}
@@ -28,9 +47,9 @@ export function TechnicalDna() {
         <p>Une vision de bout en bout <span>— de l’application au système qui la propulse.</span></p>
       </Reveal>
       <div className="stack-preview">
-        <Reveal><p className="eyebrow stack-label"><span className="section-index">02 /</span> OUTILS & TECHNOLOGIES</p></Reveal>
+        <Reveal><p className="eyebrow stack-label"><span className="section-index">02 /</span> OUTILS & TECHNOLOGIES <span className={`stack-domain tone-${selectedDomain}`}>/ {activeDiscipline.label}</span></p></Reveal>
         <div className="stack-groups">
-          {skillGroups.map((group, index) => (
+          {activeSkillGroups.map((group, index) => (
             <Reveal key={group.label} delay={index * 0.035}>
               <div className={`stack-group tone-${group.tone}`}>
                 <h3><span />{group.label}</h3>

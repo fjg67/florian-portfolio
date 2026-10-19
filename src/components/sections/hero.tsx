@@ -1,11 +1,13 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useState } from "react";
 import { disciplines, profile } from "@/data/portfolio";
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 
 export function Hero() {
   const reduceMotion = usePrefersReducedMotion();
+  const [selectedDiscipline, setSelectedDiscipline] = useState<string | null>(null);
 
   return (
     <section className="hero section-wrap" id="accueil">
@@ -31,7 +33,7 @@ export function Hero() {
           <a className="button button-quiet" href="#projets">Voir mes projets <span aria-hidden="true">↗</span></a>
         </motion.div>
       </div>
-      <motion.div className="hero-visual" aria-label="Les trois dimensions Mobile, Web et Infrastructure"
+      <motion.div className={`hero-visual${selectedDiscipline ? ` hero-visual-selected-${selectedDiscipline}` : ""}`} aria-label="Les trois dimensions Mobile, Web et Infrastructure"
         initial={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: reduceMotion ? 0.01 : 0.8, delay: 0.45 }}>
         <div className="orbit orbit-outer" />
         <div className="orbit orbit-inner" />
@@ -41,9 +43,16 @@ export function Hero() {
         </svg>
         <div className="hero-core"><span>FJG</span><i>FLORIAN JOVE GARCIA</i></div>
         {disciplines.map((discipline) => (
-          <div className={`hero-node node-${discipline.key}`} key={discipline.key}>
+          <button
+            className={`hero-node node-${discipline.key}`}
+            key={discipline.key}
+            type="button"
+            aria-pressed={selectedDiscipline === discipline.key}
+            aria-label={`Mettre en évidence ${discipline.label}`}
+            onClick={() => setSelectedDiscipline((current) => current === discipline.key ? null : discipline.key)}
+          >
             <span className="node-dot" /><strong>{discipline.label}</strong><small>{discipline.technologies.slice(0, 2).join(" · ")}</small>
-          </div>
+          </button>
         ))}
         <div className="visual-caption"><span>FIG. 01</span><span>ONE CONNECTED ECOSYSTEM</span></div>
       </motion.div>

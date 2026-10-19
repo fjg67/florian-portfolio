@@ -3,18 +3,19 @@
 import { AnimatePresence, motion } from "framer-motion";
 import type { CSSProperties, FormEvent } from "react";
 import { useEffect, useRef, useState } from "react";
-import { experiences, profile, projects, skillGroups } from "@/data/portfolio";
+import { education, experiences, profile, projects, skillGroups } from "@/data/portfolio";
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 
 type TerminalProps = { open: boolean; onClose: () => void };
 type Entry = { command: string; output: string[] };
 
-const commandNames = ["help", "about", "skills", "projects", "experience", "contact", "whoami", "matrix", "clear"];
+const commandNames = ["help", "about", "skills", "projects", "experience", "education", "contact", "whoami", "theme mobile|web|infra", "sudo hire florian", "coffee", "matrix", "clear"];
 
 export function Terminal({ open, onClose }: TerminalProps) {
   const [entries, setEntries] = useState<Entry[]>([]);
   const [value, setValue] = useState("");
   const [matrix, setMatrix] = useState(false);
+  const [theme, setTheme] = useState<"default" | "mobile" | "web" | "infra">("default");
   const inputRef = useRef<HTMLInputElement>(null);
   const returnFocusRef = useRef<HTMLElement | null>(null);
   const reduceMotion = usePrefersReducedMotion();
@@ -45,6 +46,21 @@ export function Terminal({ open, onClose }: TerminalProps) {
       setEntries([]);
       return;
     }
+    const themeCommand = command.match(/^theme(?:\s+(mobile|web|infra))?$/);
+    if (themeCommand) {
+      if (!themeCommand[1]) {
+        setEntries((current) => [...current, { command, output: ["Usage: theme mobile|web|infra"] }]);
+        return;
+      }
+      const nextTheme = themeCommand[1];
+      if (nextTheme !== "mobile" && nextTheme !== "web" && nextTheme !== "infra") {
+        setEntries((current) => [...current, { command, output: ["Usage: theme mobile|web|infra"] }]);
+        return;
+      }
+      setTheme(nextTheme);
+      setEntries((current) => [...current, { command, output: [`Palette ${nextTheme} activée.`] }]);
+      return;
+    }
     let output: string[];
     switch (command) {
       case "help":
@@ -65,8 +81,17 @@ export function Terminal({ open, onClose }: TerminalProps) {
       case "experience":
         output = experiences.map((experience) => `${experience.company} — ${experience.role} (${experience.period})`);
         break;
+      case "education":
+        output = education.map((item) => `${item.title}${item.detail ? ` — ${item.detail}` : ""}${item.school ? ` · ${item.school}` : ""}${item.status ? ` · ${item.status}` : ""}`);
+        break;
       case "contact":
         output = [profile.email, profile.location];
+        break;
+      case "sudo hire florian":
+        output = ["Pour échanger sur une opportunité :", `Contact : ${profile.email}`];
+        break;
+      case "coffee":
+        output = [" ( (", "  ) )", "........", "Un café et on reprend le code."];
         break;
       case "matrix":
         setMatrix(true);
@@ -78,13 +103,20 @@ export function Terminal({ open, onClose }: TerminalProps) {
     setEntries((current) => [...current, { command, output }]);
   }
 
+  function closeTerminal() {
+    setTheme("default");
+    setMatrix(false);
+    onClose();
+  }
+
   return (
     <AnimatePresence>
       {open && (
-        <motion.div className="terminal-backdrop" role="presentation" onMouseDown={(event) => event.target === event.currentTarget && onClose()}
+        <motion.div className="terminal-backdrop" role="presentation" onMouseDown={(event) => event.target === event.currentTarget && closeTerminal()}
           initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: reduceMotion ? 0.1 : 0.2 }}>
-          <motion.section className="terminal-window" role="dialog" aria-modal="true" aria-labelledby="terminal-title"
+          <motion.section className="terminal-window" data-theme={theme} role="dialog" aria-modal="true" aria-labelledby="terminal-title"
             onKeyDown={(event) => {
+              if (event.key === "Escape") closeTerminal();
               if (event.key !== "Tab") return;
               const focusable = event.currentTarget.querySelectorAll<HTMLElement>("button, input:not([disabled]), a[href], [tabindex]:not([tabindex='-1'])");
               const first = focusable.item(0);
@@ -104,14 +136,18 @@ export function Terminal({ open, onClose }: TerminalProps) {
             <div className="terminal-bar">
               <div className="window-dots" aria-hidden="true"><i /><i /><i /></div>
               <span id="terminal-title">florian@portfolio: ~</span>
-              <button onClick={onClose} aria-label="Fermer le terminal">ESC</button>
+              <button onClick={closeTerminal} aria-label="Fermer le terminal">ESC</button>
             </div>
             <div className="terminal-content" aria-live="polite">
               <p className="terminal-welcome">Bienvenue. Tapez <code>help</code> pour explorer.</p>
               {entries.map((entry, index) => (
                 <div className="terminal-entry" key={`${entry.command}-${index}`}>
                   <p><span>florian@portfolio:~$</span> {entry.command}</p>
-                  {entry.output.map((line, lineIndex) => <p className="terminal-output" key={`${line}-${lineIndex}`}>{line}</p>)}
+                  {entry.output.map((line, lineIndex) => (
+                    <p className="terminal-output" key={`${line}-${lineIndex}`}>
+                      {line.startsWith("Contact : ") ? <>Contact : <a className="terminal-link" href={`mailto:${profile.email}`}>{profile.email}</a></> : line}
+                    </p>
+                  ))}
                 </div>
               ))}
               <form onSubmit={submitCommand} className="terminal-form">

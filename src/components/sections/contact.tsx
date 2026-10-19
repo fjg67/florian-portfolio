@@ -16,6 +16,7 @@ export function ContactSection() {
       setCopied(true);
       window.setTimeout(() => setCopied(false), 2200);
     } catch {
+      setCopied(false);
       setCopyError(true);
     }
   }
@@ -45,11 +46,19 @@ export function ContactSection() {
           <p className="eyebrow"><span className="status-pulse" /> READY TO CONNECT?</p>
           <h2>CONSTRUISONS<br /><span>QUELQUE CHOSE</span><br />D’INCROYABLE.</h2>
           <p className="contact-lede">Une idée, un projet ou simplement envie d’échanger ?<br />Je serai ravi d’en discuter.</p>
-          <a className="contact-email" href={`mailto:${profile.email}`}>{profile.email}<span aria-hidden="true">↗</span></a>
+          <button
+            className="contact-email"
+            type="button"
+            onClick={copyEmail}
+            aria-live="polite"
+            aria-label={copied ? "Adresse copiée." : copyError ? "Copie indisponible." : `Copier l’adresse ${profile.email}`}
+          >
+            {copied ? "Adresse copiée" : copyError ? "Copie indisponible" : profile.email}<span aria-hidden="true">{copied ? "✓" : "↗"}</span>
+          </button>
           <p className="contact-location"><span className="location-pin">⌖</span> {profile.location}</p>
           <div className="contact-actions">
             <a className="button button-primary" href={`mailto:${profile.email}`}>Me contacter <span aria-hidden="true">↗</span></a>
-            <button className="button button-quiet" onClick={copyEmail} aria-live="polite">{copied ? "✓ Email copié" : copyError ? "Copie indisponible" : "Copier mon email"}</button>
+            <button className="button button-quiet" onClick={copyEmail}>{copied ? "✓ Email copié" : copyError ? "Copie indisponible" : "Copier mon email"}</button>
           </div>
           <form className="contact-form" onSubmit={submitForm} noValidate>
             <p className="eyebrow">OU ÉCRIVEZ-MOI UN MESSAGE</p>
