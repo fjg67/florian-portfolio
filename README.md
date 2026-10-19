@@ -1,36 +1,44 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Portfolio — Florian Jove Garcia
 
-## Getting Started
+Portfolio personnel construit avec Next.js App Router, React, TypeScript, Tailwind CSS et Framer Motion. Le contenu du portfolio est centralisé dans `src/data/portfolio.ts`.
 
-First, run the development server:
+## Développement
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Ouvrir [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Vérifications
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run lint
+npx tsc --noEmit
+npm run build
+```
 
-## Learn More
+## Déploiement GitHub Pages
 
-To learn more about Next.js, take a look at the following resources:
+Le dépôt publie le site à l’adresse `https://fjg67.github.io/florian-portfolio/`. Le workflow GitHub Actions construit l’export statique Next.js et le déploie sur GitHub Pages à chaque push sur `main`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Pour l’activer dans GitHub, ouvrir **Settings → Pages** et choisir **GitHub Actions** comme source de déploiement.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Build local de l’export configuré pour GitHub Pages :
 
-## Deploy on Vercel
+```bash
+GITHUB_PAGES=true NEXT_PUBLIC_SITE_URL=https://fjg67.github.io npm run build
+touch out/.nojekyll
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+L’export est généré dans `out/`.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Le formulaire de contact ouvre le logiciel e-mail de la personne qui visite le site. Aucun service d’envoi backend n’est configuré.
+
+## Structure principale
+
+- `src/app/` : routes, layout, métadonnées, sitemap et robots.
+- `src/components/` : navigation, terminal, animations, carte sociale et sections.
+- `src/data/portfolio.ts` : informations du profil, compétences, expériences, projets et formations.
+- `.github/workflows/deploy.yml` : build et déploiement GitHub Pages.

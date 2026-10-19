@@ -1,9 +1,12 @@
 import type { NextConfig } from "next";
 
+const isGitHubPages = process.env.GITHUB_PAGES === "true";
+const basePath = isGitHubPages ? "/florian-portfolio" : "";
+
 const nextConfig: NextConfig = {
-  /* config options here */
-  cacheComponents: true,
-  partialPrefetching: true,
+  output: "export",
+  basePath,
+  trailingSlash: true,
   turbopack: {
     rules: {
       "*.css": {
